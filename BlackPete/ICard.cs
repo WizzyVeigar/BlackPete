@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlackPete
 {
-    interface ICard
+    public interface ICard
     {
         int CardValue { get; }
         string Name { get; }

@@ -39,5 +39,10 @@ namespace BlackPete
         {
             Name = name;
         }
+
+        protected Card(int cardValue, string name) : this(name)
+        {
+            CardValue = cardValue;
+        }
     }
 }

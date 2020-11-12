@@ -17,15 +17,20 @@ namespace BlackPete
     {
         private Suit cardSuit;
 
+        public PlayingCard(Suit suit, string name, int cardValue) : base(cardValue, name)
+        {
+            CardSuit = suit;
+        }
+
         public Suit CardSuit
         {
             get { return cardSuit; }
             set { cardSuit = value; }
         }
 
-        public PlayingCard(Suit cSuit,string name) : base(name)
+        public override string ToString()
         {
-            CardSuit = cSuit;
+            return "CardName: " + Name + " of " + CardSuit.ToString();
         }
     }
 }
