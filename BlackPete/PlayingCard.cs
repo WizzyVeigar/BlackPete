@@ -30,7 +30,7 @@ namespace BlackPete
 
         public override string ToString()
         {
-            return "CardName: " + Name + " of " + CardSuit.ToString();
+            return Name + " of " + CardSuit.ToString();
         }
     }
 }

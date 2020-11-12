@@ -23,31 +23,39 @@ namespace BlackPete
         }
 
         /// <summary>
-        /// Removes an extra jakc from the deck, so we can have a black pete deck
+        /// Removes an extra jack from the deck, so we can have a black pete deck
         /// </summary>
         /// <returns>Returns a black pete playing card deck</returns>
-        public List<PlayingCard> CreateBlackPeteDeck()
+        public List<Card> CreateBlackPeteDeck<T>()
         {
-            List<PlayingCard> deck = CreatePlayingCardDeck();
-
-            for (int i = 0; i < deck.Count(); i++)
+            List<Card> deck = null;
+            Type cardType = typeof(T);
+            if (cardType.Equals(typeof(PlayingCard)))
             {
-                if (deck[i].CardSuit == Suit.Spades && deck[i].CardValue == 11)
+                deck = CreatePlayingCardDeck();
+
+                for (int i = 0; i < deck.Count(); i++)
                 {
-                    deck.RemoveAt(i);
+                    if (deck[i] is PlayingCard)
+                    {
+                        if (((PlayingCard)deck[i]).CardSuit == Suit.Spades && deck[i].CardValue == 11)
+                        {
+                            deck.RemoveAt(i);
+                        }
+                    }
                 }
             }
 
             return deck;
+
         }
         /// <summary>
         /// Creates a normal playing card deck
         /// </summary>
         /// <returns>Returns a playing card deck with size 52</returns>
-        public List<PlayingCard> CreatePlayingCardDeck()
+        public List<Card> CreatePlayingCardDeck()
         {
-            List<PlayingCard> deck = new List<PlayingCard>();
-
+            List<Card> deck = new List<Card>();
             for (int i = 0; i < Enum.GetNames(typeof(Suit)).Length; i++)
             {
                 for (int j = 0; j < 13; j++)

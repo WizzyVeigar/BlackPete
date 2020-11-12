@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace BlackPete
 {
-    class BlackPetePlayer : Player
+    class BlackPetePlayer<T> : Player
     {
-        private List<PlayingCard> cardsInHand;
-        public List<PlayingCard> CardsInHand
+        //This is not good
+        private static Random rng = new Random();
+
+        private List<Card> cardsInHand;
+        public List<Card> CardsInHand
         {
             get { return cardsInHand; }
             set { cardsInHand = value; }
@@ -18,29 +21,40 @@ namespace BlackPete
         public BlackPetePlayer(string name) : base(name)
         {
             //Do this somewhere else or inject with constructor
-            CardsInHand = new List<PlayingCard>();
+            CardsInHand = new List<Card>();
         }
 
-
-        public PlayingCard TakeCard(BlackPetePlayer otherPlayer)
+        /// <summary>
+        /// Steals a card from <paramref name="otherPlayer"/>
+        /// </summary>
+        /// <param name="otherPlayer"></param>
+        /// <returns></returns>
+        public Card TakeCard(BlackPetePlayer<T> otherPlayer)
         {
-            return null;
+            Card stolenCard = otherPlayer.CardsInHand[rng.Next(otherPlayer.CardsInHand.Count)];
+            CardsInHand.Add(stolenCard);
+            otherPlayer.CardsInHand.Remove(stolenCard);
+            return stolenCard;
         }
 
         /// <summary>
         /// Method to check for pairs at the start of the game
         /// </summary>
-        public void CheckForPair()
+        public IEnumerable<string> CheckForPair()
         {
             for (int i = 0; i < CardsInHand.Count; i++)
             {
-                for (int j = 1; j <= CardsInHand.Count; j++)
+                for (int j = i + 1; j < CardsInHand.Count; j++)
                 {
-                    if (CardsInHand[i].CardValue == CardsInHand[j].CardValue)
+                    if (typeof(T).Equals(typeof(PlayingCard)))
                     {
-                        Announce(Name + " has a pair of " + CardsInHand[i].Name + "'s");
-                        CardsInHand.RemoveAt(i);
-                        CardsInHand.RemoveAt(j - 1);
+                        if (CardsInHand[i].CardValue == CardsInHand[j].CardValue)
+                        {
+                            string temp = CardsInHand[i].Name;
+                            CardsInHand.RemoveAt(i);
+                            CardsInHand.RemoveAt(j - 1);
+                            yield return Name + " has a pair of " + temp + "'s";
+                        }
                     }
                 }
             }
@@ -50,17 +64,18 @@ namespace BlackPete
         /// Method to check for new pair, after stealing a card
         /// </summary>
         /// <param name="takenCard">The card you took from your opponent</param>
-        public void CheckForPair(PlayingCard takenCard)
+        public bool CheckForNewPair(Card takenCard)
         {
             for (int i = 0; i < CardsInHand.Count; i++)
             {
                 if (takenCard.CardValue == CardsInHand[i].CardValue)
                 {
-                    Announce(Name + " has a pair of " + CardsInHand[i].Name + "'s");
                     CardsInHand.RemoveAt(i);
                     i = CardsInHand.Count + 1;
+                    return true;
                 }
             }
+            return false;
         }
 
         public IEnumerable<string> ShowPlayerCards()
@@ -70,15 +85,6 @@ namespace BlackPete
             {
                 yield return CardsInHand[i].ToString();
             }
-        }
-
-        /// <summary>
-        /// Method for player to communicate something
-        /// </summary>
-        /// <param name="message">What the player wants to say</param>
-        public void Announce(string message)
-        {
-            //BlackPete.Instance.Logger.LogMessage(message);
         }
     }
 }

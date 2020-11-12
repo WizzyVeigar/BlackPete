@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlackPete
 {
-    public abstract class CardGame<T>
+    public abstract class CardGame
     {
         private ILogger gameLogger;
 
@@ -16,9 +16,9 @@ namespace BlackPete
             set { gameLogger = value; }
         }
 
-        private IList<T> cards;
+        private IList<Card> cards;
 
-        public IList<T> Cards
+        public IList<Card> Cards
         {
             get { return cards; }
             set { cards = value; }
@@ -31,9 +31,17 @@ namespace BlackPete
             get { return players; }
             set { players = value; }
         }
-
+        /// <summary>
+        /// Method for setting up the necessary things to start the game
+        /// </summary>
         public abstract void Setup();
+        /// <summary>
+        /// Start and play of the game
+        /// </summary>
         public abstract void StartGame();
+        /// <summary>
+        /// Method for when game is ending/ended
+        /// </summary>
         public abstract void EndGame();
 
         public CardGame(IList<Player> players, ILogger logger)
@@ -41,8 +49,11 @@ namespace BlackPete
             Players = players;
             GameLogger = logger;
         }
-
-        public void ShuffleCards(IList<T> cards)
+        /// <summary>
+        /// Shuffles the cards
+        /// </summary>
+        /// <param name="cards"></param>
+        public void ShuffleCards(IList<Card> cards)
         {
             cards.Shuffle();
         }

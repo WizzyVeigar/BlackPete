@@ -10,9 +10,9 @@ namespace BlackPete
     {
         static void Main(string[] args)
         {
-            List<Player> players = new List<Player>() { new BlackPetePlayer("Lars"), new BlackPetePlayer("Thomas"), new BlackPetePlayer("Why"), new BlackPetePlayer("Nanna") }; 
+            List<Player> players = new List<Player>() { new BlackPetePlayer<PlayingCard>("Lars"), new BlackPetePlayer<PlayingCard>("Thomas"), new BlackPetePlayer<PlayingCard>("Nej"), new BlackPetePlayer<PlayingCard>("Nanna") }; 
 
-            BlackPeteGame blackPeteGame = new BlackPeteGame(players, new ConsoleLogger());
+            CardGame blackPeteGame = new BlackPeteGame<PlayingCard>(players, new ConsoleLogger());
             
             blackPeteGame.Setup();
             blackPeteGame.StartGame();
