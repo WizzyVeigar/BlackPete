@@ -20,9 +20,6 @@ namespace BlackPete
 
         public override void Setup()
         {
-
-
-
             ShuffleCards(Cards);
             RemoveNonPetePlayers();
             AddCardsToPlayers();
@@ -41,7 +38,7 @@ namespace BlackPete
                 //Loops through each players turn
                 for (int i = 0; i < Players.Count; i++)
                 {
-                    BlackPetePlayer<T> otherPlayer = ((BlackPetePlayer<T>)Players[i == 0 ? Players.Count - 1 : i - 1]);
+                    BlackPetePlayer<T> otherPlayer = (BlackPetePlayer<T>)Players[i == 0 ? Players.Count - 1 : i - 1];
                     
                     //!Gets a user input between 1 and the next players hand amount
                     string choice = ((ConsoleLogger)GameLogger).GetUInput(
