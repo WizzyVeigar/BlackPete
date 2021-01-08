@@ -39,7 +39,7 @@ namespace BlackPete
                     if (deck[i] is PlayingCard)
                     {
                         if (((PlayingCard)deck[i]).CardSuit == Suit.Spades && deck[i].CardValue == 11)
-                        {
+                        { 
                             deck.RemoveAt(i);
                         }
                     }

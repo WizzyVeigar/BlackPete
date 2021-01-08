@@ -25,7 +25,7 @@ namespace BlackPete
         public Suit CardSuit
         {
             get { return cardSuit; }
-            set { cardSuit = value; }
+            private set { cardSuit = value; }
         }
 
         public override string ToString()

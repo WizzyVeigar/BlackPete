@@ -10,7 +10,10 @@ namespace BlackPete
     {
         static void Main(string[] args)
         {
-            List<Player> players = new List<Player>() { new BlackPetePlayer<PlayingCard>("Lars"), new BlackPetePlayer<PlayingCard>("Thomas"), new BlackPetePlayer<PlayingCard>("Nej"), new BlackPetePlayer<PlayingCard>("Nanna") }; 
+            List<Player> players = new List<Player>() { 
+                new BlackPetePlayer<PlayingCard>("Lars", false), new BlackPetePlayer<PlayingCard>("Thomas", true), 
+                new BlackPetePlayer<PlayingCard>("Nej", true), new BlackPetePlayer<PlayingCard>("Nanna", true) 
+            }; 
 
             CardGame blackPeteGame = new BlackPeteGame<PlayingCard>(players, new ConsoleLogger());
             

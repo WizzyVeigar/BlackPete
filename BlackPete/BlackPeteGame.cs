@@ -15,7 +15,7 @@ namespace BlackPete
 
         public override void EndGame()
         {
-            GameLogger.LogMessage("The winner is: " + Players.First().Name + "!");
+            GameLogger.LogMessage("The loser is: " + Players.First().Name + "!");
         }
 
         public override void Setup()
@@ -39,47 +39,67 @@ namespace BlackPete
                 for (int i = 0; i < Players.Count; i++)
                 {
                     BlackPetePlayer<T> otherPlayer = (BlackPetePlayer<T>)Players[i == 0 ? Players.Count - 1 : i - 1];
-                    
-                    //!Gets a user input between 1 and the next players hand amount
-                    string choice = ((ConsoleLogger)GameLogger).GetUInput(
-                        Players[i].Name + ", it is your turn" + "\n" +
-                        "Choose a number between 1-" + otherPlayer.CardsInHand.Count);
-
-                    try
+                    Card stolenCard = null;
+                    if (Players[i].IsAi)
                     {
-                        Card stolenCard = ((BlackPetePlayer<T>)Players[i]).TakeCard(otherPlayer);
-                        //Steal a card from your opponent, then check whether or not it makes a pair
-                        if (!((BlackPetePlayer<T>)Players[i]).CheckForNewPair(stolenCard))
+                        try
                         {
-                            GameLogger.LogMessage("You Stole " + ((BlackPetePlayer<T>)Players[i]).TakeCard(otherPlayer).ToString() + " from " + otherPlayer.Name);
+                            stolenCard = ((BlackPetePlayer<T>)Players[i]).TakeCard(otherPlayer);
                         }
-                        else
+                        catch (Exception)
                         {
-                            GameLogger.LogMessage("You got a pair of " + stolenCard.Name + "'s");
+                            GameLogger.LogMessage("Something went wrong with the Ai");
                         }
                     }
-                    catch (Exception)
+                    else
                     {
-                        GameLogger.LogMessage("Something went wrong with your input, better luck next turn");
+                        //!Gets a user input between 1 and the next players hand amount
+                        string choice = ((ConsoleLogger)GameLogger).GetUInput(
+                            Players[i].Name + ", it is your turn" + "\n" +
+                            "Choose a number between 1-" + otherPlayer.CardsInHand.Count);
+                        try
+                        {
+                            stolenCard = ((BlackPetePlayer<T>)Players[i]).TakeCard(otherPlayer, Convert.ToInt32(choice));
+                        }
+                        catch (Exception)
+                        {
+                            stolenCard = ((BlackPetePlayer<T>)Players[i]).TakeCard(otherPlayer);
+                            GameLogger.LogMessage("Your input was invalid and you instead took a random card! \n Try entering a valid number next time");
+                        }
+                    }
+                    //Steal a card from your opponent, then check whether or not it makes a pair
+                    if (((BlackPetePlayer<T>)Players[i]).CheckForNewPair(stolenCard))
+                    {
+                        GameLogger.LogMessage(Players[i].Name + " Stole " + ((BlackPetePlayer<T>)Players[i]).TakeCard(otherPlayer).ToString() + " from " + otherPlayer.Name);
+                    }
+                    else
+                    {
+                        GameLogger.LogMessage(Players[i].Name + " got a " + stolenCard.Name);
                     }
 
-                    CheckIfPlayerDone((BlackPetePlayer<T>)Players[i]);
-                    CheckIfPlayerDone(otherPlayer);
+                    if (CheckIfPlayerDone((BlackPetePlayer<T>)Players[i]))
+                    {
+                        Players.RemoveAt(i);
+                    }
+                    else if (CheckIfPlayerDone(otherPlayer))
+                    {
+                        Players.Remove(otherPlayer);
+                    }
                 }
             } while (Players.Count != 1);
         }
 
-        private BlackPetePlayer<T> CheckIfPlayerDone(BlackPetePlayer<T> player)
+        private bool CheckIfPlayerDone(BlackPetePlayer<T> player)
         {
             if (player.CardsInHand.Count == 0)
             {
-                return player;
+                return true;
             }
-            return null;
+            return false;
         }
 
         /// <summary>
-        /// Checks all players at the start of the game, to see if they have pairs
+        /// Checks all players at the start of the game, to see if they have any pairs
         /// </summary>
         private void PairCheckAllPlayers()
         {

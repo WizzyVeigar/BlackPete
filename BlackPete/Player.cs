@@ -9,17 +9,27 @@ namespace BlackPete
     public abstract class Player
     {
         private string name;
-
         public string Name
         {
             get { return name; }
-            set { name = value; }
+            private set { name = value; }
         }
 
+        private bool isAi;
 
-        public Player(string name)
+        public bool IsAi
         {
-            Name = name;
+            get { return isAi; }
+            private set { isAi = value; }
+        }
+
+        public Player(string name, bool isAi)
+        {
+            if (isAi)
+            {
+                Name += name + " (Ai)";
+            }
+            IsAi = isAi;
         }
     }
 }

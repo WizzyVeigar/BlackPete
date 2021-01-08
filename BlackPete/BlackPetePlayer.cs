@@ -8,8 +8,8 @@ namespace BlackPete
 {
     class BlackPetePlayer<T> : Player
     {
-        //This is not good
-        private static Random rng = new Random();
+        
+        private Random rng = new Random();
 
         private List<Card> cardsInHand;
         public List<Card> CardsInHand
@@ -18,20 +18,33 @@ namespace BlackPete
             set { cardsInHand = value; }
         }
 
-        public BlackPetePlayer(string name) : base(name)
+        public BlackPetePlayer(string name, bool isAi) : base(name, isAi)
         {
             //Do this somewhere else or inject with constructor
             CardsInHand = new List<Card>();
         }
 
         /// <summary>
-        /// Steals a card from <paramref name="otherPlayer"/>
+        /// Steals a random card from <paramref name="otherPlayer"/>
         /// </summary>
         /// <param name="otherPlayer"></param>
-        /// <returns></returns>
+        /// <returns>Returns the card stolen</returns>
         public Card TakeCard(BlackPetePlayer<T> otherPlayer)
         {
             Card stolenCard = otherPlayer.CardsInHand[rng.Next(otherPlayer.CardsInHand.Count)];
+            CardsInHand.Add(stolenCard);
+            otherPlayer.CardsInHand.Remove(stolenCard);
+            return stolenCard;
+        }
+        /// <summary>
+        /// Take a specific card from <paramref name="otherPlayer"/>
+        /// </summary>
+        /// <param name="otherPlayer"></param>
+        /// <param name="index"></param>
+        /// <returns>Returns the card stolen</returns>
+        public Card TakeCard(BlackPetePlayer<T> otherPlayer, int index)
+        {
+            Card stolenCard = otherPlayer.CardsInHand[index];
             CardsInHand.Add(stolenCard);
             otherPlayer.CardsInHand.Remove(stolenCard);
             return stolenCard;
@@ -78,9 +91,12 @@ namespace BlackPete
             return false;
         }
 
+        /// <summary>
+        /// Method for returning the player's cards in hand's ToString method
+        /// </summary>
+        /// <returns>Yield returns a card's ToString method</returns>
         public IEnumerable<string> ShowPlayerCards()
-        {
-            string cards = string.Empty;
+        {            
             for (int i = 0; i < CardsInHand.Count; i++)
             {
                 yield return CardsInHand[i].ToString();
